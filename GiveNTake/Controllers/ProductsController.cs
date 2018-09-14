@@ -95,6 +95,7 @@ namespace GiveNTake.Controllers
             var product = await _context.Products
                 .Include(p => p.Owner)
                 .Include(p => p.City)
+                .Include(p => p.Media)
                 .Include(p => p.Category)
                 .ThenInclude(c => c.ParentCategory)
                 .SingleOrDefaultAsync(p => p.ProductId == id);
@@ -203,6 +204,41 @@ namespace GiveNTake.Controllers
             _context.Products.Update(product);
             await _context.SaveChangesAsync();
             return Ok();
+        }
+
+        [AllowAnonymous]
+        [HttpPost("slim")]
+        public async Task<ActionResult<ProductDTO>> AddNewProduct([FromBody] NewProductSlimDTO newProduct)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            Category category = _context.Categories
+                .Include(c => c.ParentCategory)
+                .SingleOrDefault(c => c.Name == newProduct.Category);
+            if (category == null)
+            {
+                return new BadRequestObjectResult("The provided category and sub category doesnt exist");
+            }
+
+            var user = await _context.Users.FirstAsync();
+            var product = new Product
+            {
+                Owner = user,
+                Category = category,
+                Title = newProduct.Title,
+                Description = newProduct.Description,
+                PublishDate = DateTime.UtcNow
+            };
+            _context.Products.Add(product);
+
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(
+                nameof(GetProduct),
+                new { id = product.ProductId },
+                _productsMapper.Map<ProductDTO>(product));
         }
 
         [HttpPost("")]
