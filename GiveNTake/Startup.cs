@@ -98,6 +98,12 @@ namespace GiveNTake
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             app.UseDefaultFiles();
+            app.UseCors(b =>
+            {
+                b.AllowAnyHeader();
+                b.AllowAnyOrigin();
+                b.AllowAnyMethod();
+            });
             FileExtensionContentTypeProvider provider = new FileExtensionContentTypeProvider();
 
             provider.Mappings[".ts"] = "application/x-typescript";

@@ -136,6 +136,7 @@ namespace GiveNTake.Controllers
             IQueryable<Product> productsQuery = _context.Products
                 .Include(p => p.Owner)
                 .Include(p => p.City)
+                .Include(p => p.Media)
                 .Include(p => p.Category)
                 .ThenInclude(c => c.ParentCategory);
 
@@ -150,8 +151,7 @@ namespace GiveNTake.Controllers
             }
             else
             {
-                productsQuery = productsQuery.Where(p =>
-                p.Category.ParentCategory.Name == category);
+                productsQuery = productsQuery.Where(p => p.Category.Name == category || p.Category.ParentCategory.Name == category);
             }
             var products = await productsQuery.ToListAsync();
 
