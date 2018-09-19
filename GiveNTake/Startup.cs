@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Swagger;
 
@@ -95,7 +96,7 @@ namespace GiveNTake
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             app.UseDefaultFiles();
             app.UseCors(b =>
@@ -128,6 +129,8 @@ namespace GiveNTake
                         template: "api/{controller=Messages}/{action=My}/{id:int?}");
             });
 
+            var appInsightsLogLevel = Configuration.GetValue<LogLevel>("Logging:Application Insights:LogLevel:Default");
+            loggerFactory.AddApplicationInsights(app.ApplicationServices,(s,level)=> { return level >= LogLevel.Warning; });
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
