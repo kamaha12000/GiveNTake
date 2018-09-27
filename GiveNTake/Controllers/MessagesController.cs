@@ -52,7 +52,7 @@ namespace GiveNTake.Controllers
             return _messagessMapper.Map<MessageHeaderDTO[]>(messages);
         }
 
-        [HttpGet("{id}", Name = nameof(Details))]
+        [HttpGet("{id}", Name = nameof(Details))]   
         public async Task<ActionResult<MessageDTO>> Details(int id)
         {
             var message = await _context.Messages

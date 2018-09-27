@@ -325,7 +325,7 @@ namespace GiveNTake.Controllers
             return Ok();
         }
 
-        [Authorize(Policy = "ExpereincedUser")]
+        [Authorize(Policy = "ExperiencedUser")]
         [HttpPost("categories2")]
         public Task<ActionResult> AddCategory2([FromBody] NewCategoryDTO newCategory)
         {

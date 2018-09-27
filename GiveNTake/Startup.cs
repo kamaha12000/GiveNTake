@@ -69,7 +69,7 @@ namespace GiveNTake
                     };
                 });
 
-            services.AddAuthorization(options => options.AddPolicy("ExpereincedUser", (AuthorizationPolicyBuilder policy) =>
+            services.AddAuthorization(options => options.AddPolicy("ExperiencedUser", (AuthorizationPolicyBuilder policy) =>
                 policy.RequireAssertion(context =>
                 {
                     var registrationClaimValue = context.User.Claims.SingleOrDefault(c=>c.Type=="registration-date")?.Value;
